@@ -1,0 +1,28 @@
+// app/[lang]/layout.tsx - Fetch global settings
+
+import { getSettings } from '@/lib/strapi';
+
+interface LayoutProps {
+  children: React.ReactNode;
+  params: {
+    lang: string;
+  };
+}
+
+export default async function Layout({ children, params }: LayoutProps) {
+  // Fetch global settings from Strapi
+  const settings = await getSettings();
+
+  return (
+    <html lang={params.lang}>
+      <head>
+        <title>{settings?.attributes?.siteName || 'Sri Selliyamman Mill'}</title>
+        <meta
+          name="description"
+          content={settings?.attributes?.siteDescription || ''}
+        />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}

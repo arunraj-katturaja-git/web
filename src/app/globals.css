@@ -1,0 +1,151 @@
+﻿@import "tailwindcss";
+
+:root {
+  --base: #ffffff;
+  --surface: #f5faf8;
+  --ink: #1f2937;
+  --muted: #6b7280;
+  --primary: #1b5e3f;
+  --primary-strong: #0f4c31;
+  --accent: #d4a017;
+  --ring: #10b981;
+  --card: #ffffff;
+}
+
+@theme inline {
+  --color-base: var(--base);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-accent: var(--accent);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --font-sans: var(--font-body-sans);
+  --font-display: var(--font-heading-display);
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 15%, rgba(27, 94, 63, 0.07), transparent 35%),
+    radial-gradient(circle at 92% 5%, rgba(212, 160, 23, 0.06), transparent 30%),
+    linear-gradient(135deg, #ffffff 0%, #f5faf8 45%, #f0fdf4 100%);
+  color: var(--ink);
+  font-family: var(--font-body-sans), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading-display), serif;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.glass-panel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(240, 253, 250, 0.92));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(27, 94, 63, 0.24);
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #1b5e3f, #0f4c31);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #d4a017, #e6ba33);
+}
+
+.hero-speckle {
+  background:
+    radial-gradient(circle at 12px 12px, rgba(27, 94, 63, 0.07) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 28px 30px, rgba(212, 160, 23, 0.05) 1px, transparent 1px),
+    linear-gradient(140deg, rgba(255, 255, 255, 0.99), rgba(240, 253, 250, 0.97));
+  background-size:
+    34px 34px,
+    44px 44px,
+    cover;
+}
+
+.hero-orbit-ring {
+  border: 1px dashed rgba(27, 94, 63, 0.25);
+  border-radius: 9999px;
+}
+
+.media-tile {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(27, 94, 63, 0.2);
+  box-shadow: 0 12px 30px rgba(15, 35, 24, 0.12);
+}
+
+.media-tile img {
+  transition: transform 650ms ease;
+}
+
+.media-tile:hover img {
+  transform: scale(1.08);
+}
+
+.fade-up {
+  animation: fadeUp 700ms ease both;
+}
+
+.delay-1 {
+  animation-delay: 120ms;
+}
+
+.stagger-1 {
+  animation-delay: 100ms;
+}
+
+.stagger-2 {
+  animation-delay: 200ms;
+}
+
+.stagger-3 {
+  animation-delay: 300ms;
+}
+
+.stagger-4 {
+  animation-delay: 400ms;
+}
+
+.spin-slow {
+  animation: spinSlow 18s linear infinite;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,61 @@
+// components/BlogList.tsx - Fetch and display blog posts from Strapi
+
+import Link from 'next/link';
+import { getBlogPosts } from '@/lib/strapi';
+import Image from 'next/image';
+
+interface BlogPost {
+  id: number;
+  attributes: {
+    title: string;
+    slug: string;
+    content: string;
+    author: string;
+    category: string;
+    publishedAt: string;
+    createdAt: string;
+  };
+}
+
+export default async function BlogList() {
+  const response = await getBlogPosts();
+  const posts: BlogPost[] = response.data;
+
+  if (!posts || posts.length === 0) {
+    return <p>No blog posts found.</p>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {posts.map((post) => (
+        <article
+          key={post.id}
+          className="border rounded-lg overflow-hidden hover:shadow-lg transition"
+        >
+          <div className="p-4">
+            <div className="text-sm text-gray-500 mb-2">
+              {post.attributes.category}
+            </div>
+            <h2 className="text-xl font-bold mb-2">{post.attributes.title}</h2>
+            <p className="text-gray-600 mb-4">
+              {post.attributes.content.substring(0, 150)}...
+            </p>
+            <div className="flex justify-between items-center text-sm text-gray-500">
+              <span>{post.attributes.author}</span>
+              <time>
+                {new Date(post.attributes.publishedAt).toLocaleDateString()}
+              </time>
+            </div>
+
+            <Link
+              href={`/blog/${post.attributes.slug}`}
+              className="mt-4 inline-block text-primary hover:underline"
+            >
+              Read More →
+            </Link>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}

@@ -1,0 +1,44 @@
+// app/[lang]/pages/[slug]/page.tsx - Fetch page by slug from Strapi
+
+import { getPageBySlug } from '@/lib/strapi';
+import { notFound } from 'next/navigation';
+
+interface PageProps {
+  params: {
+    lang: string;
+    slug: string;
+  };
+}
+
+export default async function Page({ params }: PageProps) {
+  const page = await getPageBySlug(params.slug);
+
+  if (!page) {
+    notFound();
+  }
+
+  const { title, content, description } = page.attributes;
+
+  return (
+    <main className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-4">{title}</h1>
+      {description && <p className="text-gray-600 mb-8">{description}</p>}
+
+      <div className="prose prose-lg max-w-none">
+        {/* Render rich text content */}
+        {typeof content === 'string' ? (
+          <div dangerouslySetInnerHTML={{ __html: content }} />
+        ) : (
+          <p>{content}</p>
+        )}
+      </div>
+    </main>
+  );
+}
+
+// Generate static params for static generation
+export async function generateStaticParams() {
+  // This would be called at build time
+  // For now, return empty to use dynamic routing
+  return [];
+}
