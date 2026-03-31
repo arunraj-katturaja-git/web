@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { FaqList } from "@/components/faq-list";
 import { isSupportedLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/messages";
+import { getMediaSrc, isRemoteMediaUrl } from "@/lib/media";
 import { getProductByIdentifier } from "@/lib/strapi/products";
 import { getFaqsContent } from "@/lib/strapi/site-content";
 
@@ -31,7 +32,8 @@ export default async function ProductDetailPage({ params }: Readonly<ProductDeta
     notFound();
   }
 
-  const isRemoteImage = product.imageUrl?.startsWith("http://") || product.imageUrl?.startsWith("https://");
+  const imageSrc = getMediaSrc(product.imageUrl);
+  const isRemoteImage = isRemoteMediaUrl(product.imageUrl);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
@@ -45,13 +47,13 @@ export default async function ProductDetailPage({ params }: Readonly<ProductDeta
       <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div className="relative overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/10 via-white to-accent/10">
           <div className="relative aspect-[4/3]">
-            {product.imageUrl ? (
+            {imageSrc ? (
               <Image
                 alt={product.name}
                 className="object-cover"
                 fill
                 priority
-                src={product.imageUrl}
+                src={imageSrc}
                 unoptimized={isRemoteImage}
               />
             ) : (

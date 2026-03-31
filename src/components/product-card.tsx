@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/messages";
+import { getMediaSrc, isRemoteMediaUrl } from "@/lib/media";
 import type { ProductCardModel } from "@/types/product";
 
 interface ProductCardProps {
@@ -28,7 +29,8 @@ export function ProductCard({
   product,
   showVariants = true,
 }: Readonly<ProductCardProps>) {
-  const isRemoteImage = product.imageUrl?.startsWith("http://") || product.imageUrl?.startsWith("https://");
+  const imageSrc = getMediaSrc(product.imageUrl);
+  const isRemoteImage = isRemoteMediaUrl(product.imageUrl);
   const statusText = product.inStock ? dictionary.common.inStock : dictionary.common.outOfStock;
   const statusClass = product.inStock
     ? "border-emerald-600/30 bg-emerald-100/70 text-emerald-900"
@@ -40,13 +42,13 @@ export function ProductCard({
   return (
     <article className="group overflow-hidden rounded-2xl border border-primary/15 bg-card shadow-[0_10px_30px_rgba(15,35,24,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,35,24,0.14)]">
       <div className={`relative aspect-[4/3] overflow-hidden bg-gradient-to-br ${pickGradient(product.id)}`}>
-        {product.imageUrl ? (
+        {imageSrc ? (
           <Image
             alt={product.name}
             className="object-cover transition duration-500 group-hover:scale-105"
             fill
             sizes="(max-width: 768px) 100vw, 25vw"
-            src={product.imageUrl}
+            src={imageSrc}
             unoptimized={isRemoteImage}
           />
         ) : (

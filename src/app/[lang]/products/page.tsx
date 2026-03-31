@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { isSupportedLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/messages";
+import { getMediaSrc, isRemoteMediaUrl } from "@/lib/media";
 import { getAllProducts } from "@/lib/strapi/products";
 import { getFaqsContent } from "@/lib/strapi/site-content";
 
@@ -26,14 +27,15 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     getFaqsContent(lang, "product"),
   ]);
   const bannerImage = products[0]?.imageUrl;
+  const bannerImageSrc = getMediaSrc(bannerImage);
   const previewProducts = products.filter((product) => product.imageUrl).slice(1, 3);
-  const isRemoteBannerImage = bannerImage?.startsWith("http://") || bannerImage?.startsWith("https://");
+  const isRemoteBannerImage = isRemoteMediaUrl(bannerImage);
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <section className="fade-up relative overflow-hidden rounded-[2rem] border border-primary/15 p-6 sm:p-8">
-        {bannerImage ? (
-          <Image alt="Products banner" className="object-cover" fill src={bannerImage} unoptimized={isRemoteBannerImage} />
+        {bannerImageSrc ? (
+          <Image alt="Products banner" className="object-cover" fill src={bannerImageSrc} unoptimized={isRemoteBannerImage} />
         ) : null}
         <div className="absolute inset-0 bg-white/86" />
         <div className="absolute -right-16 -top-20 h-40 w-40 rounded-full bg-primary/25 blur-3xl" />
@@ -49,13 +51,13 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
             <div className="hidden gap-3 sm:flex">
               {previewProducts.map((product) => (
                 <div className="media-tile relative h-20 w-24" key={product.id}>
-                  {product.imageUrl ? (
+                  {getMediaSrc(product.imageUrl) ? (
                     <Image
                       alt={product.name}
                       className="object-cover"
                       fill
-                      src={product.imageUrl}
-                      unoptimized={product.imageUrl.startsWith("http://") || product.imageUrl.startsWith("https://")}
+                      src={getMediaSrc(product.imageUrl)!}
+                      unoptimized={isRemoteMediaUrl(product.imageUrl)}
                     />
                   ) : null}
                 </div>

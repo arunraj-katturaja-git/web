@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { isSupportedLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/messages";
+import { getMediaSrc, isRemoteMediaUrl } from "@/lib/media";
 import { getFeaturedProducts } from "@/lib/strapi/products";
 import { getBannersContent, getHomePageStaticContent, getSiteSettingsContent } from "@/lib/strapi/site-content";
 
@@ -57,11 +58,12 @@ export default async function HomePage({ params }: Readonly<HomePageProps>) {
   const heroBannerImage = primaryBanner?.imageUrl || homeStatic?.heroBannerImageUrl;
   const featuredBackgroundImage = homeStatic?.featuredBackgroundImageUrl;
   const supportBackgroundImage = homeStatic?.supportBackgroundImageUrl;
-  const isRemoteHeroImage = heroBannerImage?.startsWith("http://") || heroBannerImage?.startsWith("https://");
-  const isRemoteFeaturedBackground =
-    featuredBackgroundImage?.startsWith("http://") || featuredBackgroundImage?.startsWith("https://");
-  const isRemoteSupportBackground =
-    supportBackgroundImage?.startsWith("http://") || supportBackgroundImage?.startsWith("https://");
+  const heroBannerImageSrc = getMediaSrc(heroBannerImage);
+  const featuredBackgroundImageSrc = getMediaSrc(featuredBackgroundImage);
+  const supportBackgroundImageSrc = getMediaSrc(supportBackgroundImage);
+  const isRemoteHeroImage = isRemoteMediaUrl(heroBannerImage);
+  const isRemoteFeaturedBackground = isRemoteMediaUrl(featuredBackgroundImage);
+  const isRemoteSupportBackground = isRemoteMediaUrl(supportBackgroundImage);
   const showHero = Boolean(homeTitle || homeSubtitle || homeEyebrow || heroBannerImage);
   const showStoryboard = showcaseProducts.length > 0;
   const showSupportSection = Boolean(supportTitle || supportBody || supportPhone);
@@ -71,13 +73,13 @@ export default async function HomePage({ params }: Readonly<HomePageProps>) {
       {showHero ? (
         <section className="relative overflow-hidden rounded-[2.2rem] border border-primary/20 shadow-[0_22px_60px_rgba(15,35,24,0.16)]">
           <div className="relative min-h-[460px] bg-gradient-to-r from-[#143d2d] via-[#205840] to-[#4c7a4a] sm:min-h-[520px]">
-            {heroBannerImage ? (
+            {heroBannerImageSrc ? (
               <Image
                 alt="Main banner"
                 className="object-cover"
                 fill
                 priority
-                src={heroBannerImage}
+                src={heroBannerImageSrc}
                 unoptimized={isRemoteHeroImage}
               />
             ) : null}
@@ -150,13 +152,13 @@ export default async function HomePage({ params }: Readonly<HomePageProps>) {
                 className="media-tile fade-up relative h-[260px] overflow-hidden bg-gradient-to-br from-primary/15 via-white to-accent/10"
                 key={product.id}
               >
-                {product.imageUrl ? (
+                {getMediaSrc(product.imageUrl) ? (
                   <Image
                     alt={product.name}
                     className="object-cover"
                     fill
-                    src={product.imageUrl}
-                    unoptimized={product.imageUrl.startsWith("http://") || product.imageUrl.startsWith("https://")}
+                    src={getMediaSrc(product.imageUrl)!}
+                    unoptimized={isRemoteMediaUrl(product.imageUrl)}
                   />
                 ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
@@ -172,12 +174,12 @@ export default async function HomePage({ params }: Readonly<HomePageProps>) {
       ) : null}
 
       <section className="relative overflow-hidden rounded-[2rem] border border-primary/20 py-14">
-        {featuredBackgroundImage ? (
+        {featuredBackgroundImageSrc ? (
           <Image
             alt="Featured products background"
             className="object-cover"
             fill
-            src={featuredBackgroundImage}
+            src={featuredBackgroundImageSrc}
             unoptimized={isRemoteFeaturedBackground}
           />
         ) : null}
@@ -208,13 +210,13 @@ export default async function HomePage({ params }: Readonly<HomePageProps>) {
 
       {showSupportSection ? (
         <section className="relative overflow-hidden rounded-[2rem] border border-primary/25 bg-gradient-to-r from-primary to-primary-strong p-7 text-white sm:p-10">
-          {supportBackgroundImage ? (
+          {supportBackgroundImageSrc ? (
             <div className="absolute right-0 top-0 h-full w-[42%] opacity-30">
               <Image
                 alt="Support visual"
                 className="object-cover"
                 fill
-                src={supportBackgroundImage}
+                src={supportBackgroundImageSrc}
                 unoptimized={isRemoteSupportBackground}
               />
             </div>

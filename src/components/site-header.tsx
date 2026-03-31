@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/messages";
+import { getMediaSrc, isRemoteMediaUrl } from "@/lib/media";
 
 interface SiteHeaderProps {
   readonly locale: AppLocale;
@@ -27,7 +28,8 @@ export function SiteHeader({
       ? primaryPhone
       : `+91${primaryPhone}`
     : null;
-  const isRemoteLogo = logoUrl?.startsWith("http://") || logoUrl?.startsWith("https://");
+  const logoSrc = getMediaSrc(logoUrl);
+  const isRemoteLogo = isRemoteMediaUrl(logoUrl);
   const resolvedSiteName = siteName?.trim() || dictionary.siteName;
   const resolvedTagline = tagline?.trim() || dictionary.tagline;
 
@@ -35,13 +37,13 @@ export function SiteHeader({
     <header className="sticky top-0 z-30 border-b border-primary/15 bg-surface/75 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/55">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link className="group flex items-center gap-4" href={`/${locale}`}>
-          {logoUrl ? (
+          {logoSrc ? (
             <Image
               alt={`${resolvedSiteName} logo`}
               className="h-16 w-16 object-contain transition group-hover:scale-105 sm:h-20 sm:w-20"
               height={80}
               sizes="(max-width: 640px) 64px, 80px"
-              src={logoUrl}
+              src={logoSrc}
               unoptimized={isRemoteLogo}
               width={80}
             />
