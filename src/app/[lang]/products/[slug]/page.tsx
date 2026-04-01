@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 import { FaqList } from "@/components/faq-list";
 import { isSupportedLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/messages";
@@ -72,8 +73,10 @@ export default async function ProductDetailPage({ params }: Readonly<ProductDeta
           </div>
 
           <div className="rounded-2xl border border-primary/10 bg-surface/80 p-5">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">{dictionary.common.startingAt}</p>
-            <p className="mt-1 text-3xl font-bold text-primary">₹{product.startingPrice.toFixed(0)}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+              {dictionary.common.startingAt}
+            </p>
+            <p className="mt-1 text-3xl font-bold text-primary">Rs {product.startingPrice.toFixed(0)}</p>
           </div>
 
           <div className="space-y-3">
@@ -96,12 +99,20 @@ export default async function ProductDetailPage({ params }: Readonly<ProductDeta
                       </div>
 
                       <div className="text-right">
-                        <p className="text-lg font-semibold text-primary">₹{variant.price.toFixed(0)}</p>
+                        <p className="text-lg font-semibold text-primary">Rs {variant.price.toFixed(0)}</p>
                         {variant.compareAtPrice ? (
                           <p className="text-xs text-muted line-through">
-                            {dictionary.common.compareAt} ₹{variant.compareAtPrice.toFixed(0)}
+                            {dictionary.common.compareAt} Rs {variant.compareAtPrice.toFixed(0)}
                           </p>
                         ) : null}
+                        <div className="mt-3">
+                          <AddToCartButton
+                            dictionary={dictionary}
+                            disabled={!variantInStock}
+                            productId={product.id}
+                            variantId={variant.id}
+                          />
+                        </div>
                       </div>
                     </div>
                   );

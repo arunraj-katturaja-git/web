@@ -8,18 +8,14 @@ export interface BackendResponse<T> {
   meta?: Record<string, unknown>;
   error?: string;
 }
-
-const baseUrl =
-  process.env.COMMERCE_API_URL ??
-  process.env.NEXT_PUBLIC_API_URL ??
-  'http://localhost:5001/api';
+import { getCommerceApiBase } from "@/lib/backend";
 
 export async function fetchBackend<T>(
   path: string,
   options: BackendFetchOptions = {},
 ): Promise<BackendResponse<T>> {
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-  const url = new URL(normalizedPath, `${baseUrl}/`);
+  const url = new URL(normalizedPath, `${getCommerceApiBase()}/`);
   const { revalidate = 120, headers, ...init } = options;
 
   const response = await fetch(url, {

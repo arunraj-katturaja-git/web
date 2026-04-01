@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 import type { Dictionary } from "@/lib/i18n/messages";
 import { getMediaSrc, isRemoteMediaUrl } from "@/lib/media";
 import type { ProductCardModel } from "@/types/product";
@@ -57,33 +58,39 @@ export function ProductCard({
           </div>
         )}
 
-        <div className={`absolute right-3 top-3 rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${statusClass}`}>
+        <div
+          className={`absolute right-3 top-3 rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${statusClass}`}
+        >
           {statusText}
         </div>
       </div>
 
       <div className="space-y-3 p-4">
-        <h3 className="text-lg font-semibold leading-snug text-ink transition group-hover:text-primary">{product.name}</h3>
+        <h3 className="text-lg font-semibold leading-snug text-ink transition group-hover:text-primary">
+          {product.name}
+        </h3>
         <p className="line-clamp-2 text-sm leading-relaxed text-muted">{product.description}</p>
 
         <div className="flex items-end justify-between gap-3 border-b border-primary/10 pb-3">
           <div>
             <p className="text-[11px] uppercase tracking-wide text-muted">{dictionary.common.startingAt}</p>
-            <p className="text-xl font-bold text-primary">₹{product.startingPrice.toFixed(0)}</p>
+            <p className="text-xl font-bold text-primary">Rs {product.startingPrice.toFixed(0)}</p>
           </div>
         </div>
 
         {showVariants ? (
           visibleVariants.length > 0 ? (
             <div className="space-y-2">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">{dictionary.common.availablePacks}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+                {dictionary.common.availablePacks}
+              </p>
 
               {visibleVariants.map((variant) => {
                 const variantInStock = variant.stockQuantity > 0;
 
                 return (
                   <div
-                    className="flex items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-surface/80 px-3 py-2"
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-surface/80 px-3 py-3"
                     key={variant.id}
                   >
                     <div className="min-w-0">
@@ -93,13 +100,20 @@ export function ProductCard({
                       </p>
                     </div>
 
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-primary">₹{variant.price.toFixed(0)}</p>
+                    <div className="space-y-2 text-right">
+                      <p className="text-sm font-semibold text-primary">Rs {variant.price.toFixed(0)}</p>
                       {variant.compareAtPrice ? (
                         <p className="text-[11px] text-muted line-through">
-                          {dictionary.common.compareAt} ₹{variant.compareAtPrice.toFixed(0)}
+                          {dictionary.common.compareAt} Rs {variant.compareAtPrice.toFixed(0)}
                         </p>
                       ) : null}
+                      <AddToCartButton
+                        className="inline-flex items-center justify-center rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-primary-strong disabled:cursor-not-allowed disabled:opacity-60"
+                        dictionary={dictionary}
+                        disabled={!variantInStock}
+                        productId={product.id}
+                        variantId={variant.id}
+                      />
                     </div>
                   </div>
                 );
@@ -117,12 +131,14 @@ export function ProductCard({
         ) : null}
 
         {productHref ? (
-          <Link
-            className="inline-flex items-center justify-center rounded-full border border-primary/25 px-4 py-2 text-sm font-semibold text-primary-strong transition hover:border-primary hover:bg-primary hover:text-white"
-            href={productHref}
-          >
-            {dictionary.products.viewDetails}
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              className="inline-flex items-center justify-center rounded-full border border-primary/25 px-4 py-2 text-sm font-semibold text-primary-strong transition hover:border-primary hover:bg-primary hover:text-white"
+              href={productHref}
+            >
+              {dictionary.products.viewDetails}
+            </Link>
+          </div>
         ) : null}
       </div>
     </article>

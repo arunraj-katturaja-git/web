@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CartProvider } from "@/components/cart-provider";
 import { SiteHeader } from "@/components/site-header";
 import { isSupportedLocale, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/messages";
@@ -71,18 +72,19 @@ export default async function LocaleLayout({ children, params }: Readonly<Locale
         };
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader
-        dictionary={dictionary}
-        locale={lang}
-        logoUrl={siteSettings?.logoUrl}
-        siteName={siteSettings?.siteName}
-        supportPhone={supportPhone}
-        tagline={siteSettings?.tagline}
-      />
-      <main className="flex-1">{children}</main>
+    <CartProvider locale={lang}>
+      <div className="flex min-h-screen flex-col">
+        <SiteHeader
+          dictionary={dictionary}
+          locale={lang}
+          logoUrl={siteSettings?.logoUrl}
+          siteName={siteSettings?.siteName}
+          supportPhone={supportPhone}
+          tagline={siteSettings?.tagline}
+        />
+        <main className="flex-1">{children}</main>
 
-      <footer className="mt-16 border-t border-primary/15 bg-card/60 backdrop-blur-md">
+        <footer className="mt-16 border-t border-primary/15 bg-card/60 backdrop-blur-md">
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-ink">{siteSettings?.siteName ?? dictionary.siteName}</h3>
@@ -165,7 +167,8 @@ export default async function LocaleLayout({ children, params }: Readonly<Locale
             {siteSettings?.footerNote ? <p>{siteSettings.footerNote}</p> : null}
           </div>
         </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </CartProvider>
   );
 }

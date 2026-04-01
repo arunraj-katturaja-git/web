@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AuthPanel } from "@/components/auth-panel";
+import { CartPanel } from "@/components/cart-panel";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/messages";
@@ -75,7 +77,11 @@ export function SiteHeader({
           ) : null}
         </nav>
 
-        <LanguageSwitcher currentLocale={locale} dictionary={dictionary} />
+        <div className="flex items-center gap-3">
+          <CartPanel dictionary={dictionary} locale={locale} />
+          <AuthPanel dictionary={dictionary} />
+          <LanguageSwitcher currentLocale={locale} dictionary={dictionary} />
+        </div>
       </div>
     </header>
   );

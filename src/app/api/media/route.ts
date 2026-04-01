@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAllowedMediaHosts } from "@/lib/media-config";
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Invalid media url", { status: 400 });
   }
 
-  const allowedHosts = new Set(["localhost:1337", "127.0.0.1:1337"]);
+  const allowedHosts = getAllowedMediaHosts();
   if (!allowedHosts.has(parsed.host)) {
     return new NextResponse("Host not allowed", { status: 403 });
   }
